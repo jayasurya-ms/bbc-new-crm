@@ -1,5 +1,4 @@
 import ChangePassword from "@/app/auth/ChangePassword";
-import Profile from "@/app/auth/Profile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -107,11 +106,6 @@ export function NavUser({ user }) {
               </DropdownMenuLabel>
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setOpenProfile(true)}>
-                <User />
-
-                <span className=" cursor-pointer">Profile</span>
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setOpen(true)}>
                 <Key />
 
@@ -128,7 +122,6 @@ export function NavUser({ user }) {
         </SidebarMenuItem>
       </SidebarMenu>
       <ChangePassword setOpen={setOpen} open={open} />
-      <Profile setOpen={setOpenProfile} open={openprofile} />
     </>
   );
 }

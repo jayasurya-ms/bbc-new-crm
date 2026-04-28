@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { Upload, X } from "lucide-react";
+import { Camera, Upload, X } from "lucide-react";
 import { useState } from "react";
 
 const ImageUpload = ({
@@ -31,7 +31,7 @@ const ImageUpload = ({
     const fileExtension = file.name.split(".").pop().toLowerCase();
     if (!allowedExtensions.includes(fileExtension)) {
       const errorMsg = `Invalid file type. Allowed: ${allowedExtensions.join(
-        ", "
+        ", ",
       )}`;
       setError(errorMsg);
       e.target.value = "";
@@ -41,7 +41,7 @@ const ImageUpload = ({
     const fileSizeInMB = file.size / (1024 * 1024);
     if (fileSizeInMB > maxSize) {
       const errorMsg = `File size exceeds ${maxSize}MB limit. Your file is ${fileSizeInMB.toFixed(
-        2
+        2,
       )}MB`;
       setError(errorMsg);
       e.target.value = "";
@@ -83,8 +83,11 @@ const ImageUpload = ({
 
   return (
     <div className={`${className}`}>
-      <label className="text-sm font-medium" htmlFor={id}>
-        {" "}
+      <label
+        className="text-sm font-medium flex items-center gap-2"
+        htmlFor={id}
+      >
+        <Camera size={18} />
         {label}
         {required && <span className="ml-1">*</span>}
       </label>

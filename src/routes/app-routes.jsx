@@ -10,6 +10,9 @@ import { Route, Routes } from "react-router-dom";
 import AuthRoute from "./auth-route";
 import ProtectedRoute from "./protected-route";
 import Home from "@/app/dashboard/Home";
+import Profile from "@/app/profile/Profile";
+import AboutUs from "@/app/about-us/AboutUs";
+import MissionVision from "@/app/mission-vision/MissionVision";
 
 function AppRoutes() {
   return (
@@ -34,6 +37,30 @@ function AppRoutes() {
             element={
               <Suspense fallback={<LoadingBar />}>
                 <Home />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <Suspense fallback={<LoadingBar />}>
+                <Profile />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/about-us"
+            element={
+              <Suspense fallback={<LoadingBar />}>
+                <AboutUs />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/mission-and-vission"
+            element={
+              <Suspense fallback={<LoadingBar />}>
+                <MissionVision />
               </Suspense>
             }
           />
