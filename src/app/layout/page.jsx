@@ -23,8 +23,8 @@ export default function Page({ children }) {
         <AppSidebar />
       </div>
 
-      <SidebarInset>
-        <header className="sticky  top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <SidebarInset className="min-w-0 overflow-hidden">
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 w-full overflow-hidden">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1 hover:bg-primary/30" />
             <Separator
@@ -36,8 +36,8 @@ export default function Page({ children }) {
           </div>
         </header>
 
-        <main className="flex flex-1 flex-col gap-4  pt-0 ">
-          <div className="min-h-[calc(100vh-8rem)] md:min-h-[100vh] flex-1 rounded-xl p-2">
+        <main className="flex flex-1 flex-col gap-4 pt-0 min-w-0 overflow-hidden">
+          <div className="min-h-[calc(100vh-8rem)] md:min-h-[100vh] flex-1 rounded-xl p-2 min-w-0 overflow-hidden">
             {children}
           </div>
         </main>

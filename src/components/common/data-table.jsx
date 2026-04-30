@@ -43,6 +43,7 @@ const DataTable = ({
   extraButton,
   expandableRow,
   serverPagination,
+  showPagination = true,
 }) => {
   const isServer = !!serverPagination;
   const [sorting, setSorting] = useState([]);
@@ -51,7 +52,7 @@ const DataTable = ({
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize,
+    pageSize: showPagination ? pageSize : 1000000,
   });
 
   const table = useReactTable({
@@ -67,7 +68,7 @@ const DataTable = ({
           }
         : pagination,
     },
-    manualPagination: isServer,
+    manualPagination: isServer || !showPagination,
     pageCount: isServer ? serverPagination.pageCount : undefined,
     onPaginationChange: isServer
       ? (updater) => {
@@ -87,7 +88,7 @@ const DataTable = ({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: isServer ? undefined : getFilteredRowModel(),
-    getPaginationRowModel: isServer ? undefined : getPaginationRowModel(),
+    getPaginationRowModel: (isServer || !showPagination) ? undefined : getPaginationRowModel(),
   });
 
   const toggleRow = (rowId) => {
@@ -106,8 +107,8 @@ const DataTable = ({
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between py-1">
+    <div className="space-y-3 w-full min-w-0">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-1 gap-4">
         <div className="relative w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
           <Input
@@ -183,7 +184,7 @@ const DataTable = ({
         </div>
       </div>
 
-      <div className="rounded-none border min-h-[31rem]">
+      <div className="rounded-none border min-h-[31rem] w-full overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
@@ -288,60 +289,64 @@ const DataTable = ({
         </Table>
       </div>
 
-      {/* 🔹 Pagination */}
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">
+      {/* 🔹 Pagination Info */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-2 border-t pt-4">
+        <span className="text-sm text-muted-foreground font-medium">
           Total Records:{" "}
-          {isServer
-            ? serverPagination.total
-            : table.getFilteredRowModel().rows.length}
+          <span className="text-foreground">
+            {isServer
+              ? serverPagination.total
+              : table.getFilteredRowModel().rows.length}
+          </span>
         </span>
 
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline">
-                {table.getState().pagination.pageSize}
-                <ChevronDown className="ml-1 h-3 w-3" />
-              </Button>
-            </DropdownMenuTrigger>
+        {showPagination && (
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" variant="outline">
+                  {table.getState().pagination.pageSize}
+                  <ChevronDown className="ml-1 h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end">
-              {[10, 25, 50, 100].map((size) => (
-                <DropdownMenuCheckboxItem
-                  key={size}
-                  checked={table.getState().pagination.pageSize === size}
-                  onCheckedChange={() => handlePageSizeChange(size)}
-                >
-                  {size} / page
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <DropdownMenuContent align="end">
+                {[10, 25, 50, 100].map((size) => (
+                  <DropdownMenuCheckboxItem
+                    key={size}
+                    checked={table.getState().pagination.pageSize === size}
+                    onCheckedChange={() => handlePageSizeChange(size)}
+                  >
+                    {size} / page
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
 
-          <span className="text-sm">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </span>
+            <span className="text-sm font-medium">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </span>
 
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
