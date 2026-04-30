@@ -25,7 +25,7 @@ const buttonVariants = {
   hover: { scale: 1.05 },
 };
 
-export function NavMain({ items }) {
+export function NavMain({ items, openItem, setOpenItem }) {
   const location = useLocation();
 
   const handleLinkClick = (e) => {
@@ -42,7 +42,25 @@ export function NavMain({ items }) {
     if (sidebarContent && scrollPosition) {
       sidebarContent.scrollTop = parseInt(scrollPosition);
     }
-  }, [location.pathname]);
+
+    // Automatically open the parent menu if a child is active
+    if (items && setOpenItem) {
+      const activeParent = items.find((item) => {
+        if (!item.items || item.items.length === 0) return false;
+        return item.items.some((sub) =>
+          sub.items?.length
+            ? sub.items.some((deepSub) => deepSub.url === location.pathname)
+            : sub.url === location.pathname
+        );
+      });
+      
+      if (activeParent) {
+        setOpenItem(activeParent.title);
+      } else {
+        setOpenItem(null); // Close dropdowns if navigating to top-level links
+      }
+    }
+  }, [location.pathname, items, setOpenItem]);
 
   if (!items || items.length === 0) {
     return null;
@@ -92,7 +110,14 @@ export function NavMain({ items }) {
               <Collapsible
                 key={item.title}
                 asChild
-                defaultOpen={isParentActive}
+                open={openItem === item.title}
+                onOpenChange={(isOpen) => {
+                  if (isOpen) {
+                    setOpenItem(item.title);
+                  } else {
+                    setOpenItem(null);
+                  }
+                }}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
@@ -116,7 +141,7 @@ export function NavMain({ items }) {
                     as={motion.div}
                     variants={itemVariants}
                     initial="closed"
-                    animate={isParentActive ? "open" : "closed"}
+                    animate={openItem === item.title ? "open" : "closed"}
                   >
                     <SidebarMenuSub
                       className={`border-l border-primary pl-${depth + 2}`}

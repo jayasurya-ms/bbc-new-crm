@@ -402,12 +402,13 @@
   border-radius: var(--radius);
 }
 
-.sidebar-content::-webkit-scrollbar-track {
-  background: hsl(var(--sidebar-background));
+.sidebar-content {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
-.sidebar-content::-webkit-scrollbar-thumb {
-  background: hsl(var(--sidebar-primary));
+.sidebar-content::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 svg:focus {
   outline: none;
