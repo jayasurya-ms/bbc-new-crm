@@ -405,12 +405,20 @@ const LIMITED_MASTER_SETTINGS = {
   ],
 };
 
-const useNavigationData = (userType) => {
+const ADMIN_TYPE_MAP = {
+  admin: 1,
+  superadmin: 2,
+  user: 3,
+  usertype1: 4,
+};
+
+const useNavigationData = (userTypeKey) => {
   return useMemo(() => {
     const permissions =
-      USER_ROLE_PERMISSIONS[userType] || USER_ROLE_PERMISSIONS[1];
+      USER_ROLE_PERMISSIONS[userTypeKey] || USER_ROLE_PERMISSIONS[1];
 
-    const buildNavItems = (permissionKeys, config, customItems = {}) => {
+    const buildNavItems = (permissionKeys, config) => {
+      if (!permissionKeys) return [];
       return permissionKeys
         .map((key) => {
           if (key === "MASTER_SETTINGS_LIMITED") {
@@ -421,15 +429,16 @@ const useNavigationData = (userType) => {
         .filter(Boolean);
     };
 
-    const navMain = buildNavItems(
-      permissions.navMain,
-      // { ...NAVIGATION_CONFIG.COMMON, ...NAVIGATION_CONFIG.MODULES },
-      { ...NAVIGATION_CONFIG.COMMON },
-      // { MASTER_SETTINGS_LIMITED: LIMITED_MASTER_SETTINGS }
-    );
+    const navMain = buildNavItems(permissions.navMain, {
+      ...NAVIGATION_CONFIG.COMMON,
+    });
 
-    return { navMain };
-  }, [userType]);
+    const navMainReport = buildNavItems(permissions.navMainReport, {
+      ...NAVIGATION_CONFIG.COMMON,
+    });
+
+    return { navMain, navMainReport };
+  }, [userTypeKey]);
 };
 
 const Logo = ({ className }) => (
@@ -445,7 +454,8 @@ const TEAMS_CONFIG = [
 export function AppSidebar({ ...props }) {
   const [openItem, setOpenItem] = useState(null);
   const user = useSelector((state) => state.auth.user);
-  const { navMain, navMainReport } = useNavigationData(user?.user_type);
+  const userTypeKey = ADMIN_TYPE_MAP[user?.admin_type] || 1;
+  const { navMain, navMainReport } = useNavigationData(userTypeKey);
   const initialData = {
     user: {
       name: user?.name || "User",

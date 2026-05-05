@@ -29,7 +29,7 @@ const NewUser = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const user = useSelector((state) => state.auth.user);
-  const isSuperAdmin = user?.user_type === 1;
+  const isSuperAdmin = user?.admin_type === "superadmin";
 
   const { data, isLoading, isError, refetch } = useGetApiMutation({
     url: USER_API.new,
